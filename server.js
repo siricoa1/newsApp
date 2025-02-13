@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const http = require('https');
+const https = require('https');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -8,6 +8,41 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+
+app.get("/test", (req, res) => {
+  console.log("Test Route Hit!");
+  res.json({ message: "Test route is working!" });
+});
+
+// app.get("/news", (req, res) => {
+//   const options = {
+//     hostname: "newsapi.org",
+//     path: `/v2/everything?q=tesla&from=2025-01-13&sortBy=publishedAt&apiKey=${process.env.NEWS_API_KEY}`,
+//     headers: {
+//       "User-Agent": "MyNewsApp/1.0",
+//     },
+//   };
+
+//   https.get(options, (apiRes) => {
+//     let data = "";
+
+//     apiRes.on("data", (chunk) => {
+//       data += chunk;
+//     });
+
+//     apiRes.on("end", () => {
+//       try {
+//         const parsedData = JSON.parse(data);
+//         res.json(parsedData);
+//       } catch (error) {
+//         res.status(500).json({ error: "Failed to parse response" });
+//       }
+//     });
+
+//   }).on("error", (err) => {
+//     res.status(500).json({ error: err.message });
+//   });
+// });
 
 app.get("/api/titles/:title", (req, res) => {
     const options = {
@@ -21,7 +56,7 @@ app.get("/api/titles/:title", (req, res) => {
       },
     };
   
-    const request = http.request(options, function (response) {
+    const request = https.request(options, function (response) {
       let chunks = [];
   
       response.on("data", (chunk) => {
