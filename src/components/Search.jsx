@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 
 const Search = () => {
-  const [titles, settitles] = useState([]);
+  const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [movieTitle, setmovieTitle] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchtitles = async () => {
-    if (!movieTitle) return alert("Enter a movie title");
+  const fetchArticles = async () => {
+    if (!searchTerm) return alert("Enter a search term");
   
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/titles/${movieTitle}`);
+      const response = await fetch(`http://localhost:5000/news/${encodeURIComponent(searchTerm)}`);
       const data = await response.json();
       console.log("Fetched Data:", data);
 
-      settitles(data.results || data.titles || []); 
+      setArticles(data.results || data.articles|| []); 
     } catch (error) {
       console.error("Error fetching titles:", error);
     }
@@ -22,24 +22,25 @@ const Search = () => {
   };
   return (
     <div className="container text-center mt-5">
-      <h1 className="text-primary">Movie titles</h1>
+      <h1 className="text-primary">Search Articles</h1>
       <input
         type="text"
         className="form-control mb-2"
         placeholder="Enter Movie ID"
-        value={movieTitle}
-        onChange={(e) => setmovieTitle(e.target.value)}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <button className="btn btn-primary" onClick={fetchtitles}>
+      <button className="btn btn-primary" onClick={fetchArticles}>
         {loading ? "Loading..." : "Get titles"}
       </button>
 
-      {titles.length > 0 && (
+      {articles.length > 0 && (
         <ul className="list-group mt-3">
-          {titles.map((title, index) => (
+          {articles.map((article, index) => (
             <li key={index} className="list-group-item">
-              <p>{title.originalTitleText.text}</p>
-              {title.releaseYear?.year && <p>{title.releaseYear.year}</p>}
+              <p>{article.author}</p>
+              <p>{article.title}</p>
+              <p>{article.url}</p>
             </li>
           ))}
         </ul>
@@ -47,10 +48,6 @@ const Search = () => {
     </div>
   );
 };
-
-const response = await fetch(`http://localhost:5000/test`);
-const data = await response.json();
-console.log("Test Data:", data);
 
 
 export default Search;

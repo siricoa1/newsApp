@@ -9,81 +9,44 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 
-app.get("/test", (req, res) => {
-  console.log("Test Route Hit!");
-  res.json({ message: "Test route is working!" });
-});
+const today = new Date();
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(today.getDate() - 7);
 
-// app.get("/news", (req, res) => {
-//   const options = {
-//     hostname: "newsapi.org",
-//     path: `/v2/everything?q=tesla&from=2025-01-13&sortBy=publishedAt&apiKey=${process.env.NEWS_API_KEY}`,
-//     headers: {
-//       "User-Agent": "MyNewsApp/1.0",
-//     },
-//   };
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(sevenDaysAgo.getDate()).padStart(2, '0');
+console.log(year+''+ month+''+ day)
+app.get("/news/:searchTerm", (req, res) => {
+  const searchParam = req.params.searchTerm
+  const options = {
+    hostname: "newsapi.org",
+    path: `/v2/everything?q=${searchParam}&from=${year}-${month}-${day}&sortBy=publishedAt&language=en&apiKey=${process.env.NEWS_API_KEY}`,
+    headers: {
+      "User-Agent": "MyNewsApp/1.0",
+    },
+  };
 
-//   https.get(options, (apiRes) => {
-//     let data = "";
+  https.get(options, (apiRes) => {
+    let data = "";
 
-//     apiRes.on("data", (chunk) => {
-//       data += chunk;
-//     });
-
-//     apiRes.on("end", () => {
-//       try {
-//         const parsedData = JSON.parse(data);
-//         res.json(parsedData);
-//       } catch (error) {
-//         res.status(500).json({ error: "Failed to parse response" });
-//       }
-//     });
-
-//   }).on("error", (err) => {
-//     res.status(500).json({ error: err.message });
-//   });
-// });
-
-app.get("/api/titles/:title", (req, res) => {
-    const options = {
-      method: "GET",
-      hostname: "moviesdatabase.p.rapidapi.com",
-      port: null,
-      path: `/titles/search/title/${encodeURIComponent(req.params.title)}`,
-      headers: {
-        "x-rapidapi-key": process.env.RAPID_API_KEY,
-        "x-rapidapi-host": "moviesdatabase.p.rapidapi.com",
-      },
-    };
-  
-    const request = https.request(options, function (response) {
-      let chunks = [];
-  
-      response.on("data", (chunk) => {
-        chunks.push(chunk);
-      });
-  
-      response.on("end", () => {
-        try {
-          const body = Buffer.concat(chunks).toString();
-          console.log("API Response:", body);
-          const jsonResponse = JSON.parse(body);
-          res.json(jsonResponse);
-        } catch (error) {
-          res.status(500).json({ error: "Invalid JSON response", details: error.message });
-        }
-      });
+    apiRes.on("data", (chunk) => {
+      data += chunk;
     });
-  
-    request.on("error", (error) => {
-      res.status(500).json({ error: "API request failed", details: error.message });
+
+    apiRes.on("end", () => {
+      try {
+        const parsedData = JSON.parse(data);
+        res.json(parsedData);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to parse response" });
+      }
     });
-  
-    request.end();
+
+  }).on("error", (err) => {
+    res.status(500).json({ error: err.message });
+  });
 });
-
-
-
 
 app.use(express.static(path.join(__dirname, "dist")));
 
