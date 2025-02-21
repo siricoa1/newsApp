@@ -26,7 +26,7 @@ const Search = () => {
       <input
         type="text"
         className="form-control mb-2"
-        placeholder="Enter Movie ID"
+        placeholder="Enter relevant word or phrase"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
@@ -37,10 +37,16 @@ const Search = () => {
       {articles.length > 0 && (
         <ul className="list-group mt-3">
           {articles.map((article, index) => (
-            <li key={index} className="list-group-item">
+            <li key={index} className="list-group-item d-flex flex-column align-items-center text-center">
+              <h5>{article.title}</h5>
               <p>{article.author}</p>
-              <p>{article.title}</p>
-              <p>{article.url}</p>
+              <img 
+                src={article.urlToImage} 
+                className="img-fluid img-thumbnail my-2" 
+                alt="Article" 
+                style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px' }} 
+              />
+              <a href={article.url} className="btn btn-primary mt-2">Read More</a>
             </li>
           ))}
         </ul>
