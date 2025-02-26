@@ -2,12 +2,14 @@ const express = require("express");
 const path = require("path");
 const https = require('https');
 const cors = require('cors');
+const mysql = require('mysql2');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+app.use(express.json());
 
 const today = new Date();
 const sevenDaysAgo = new Date();
@@ -16,12 +18,72 @@ sevenDaysAgo.setDate(today.getDate() - 7);
 const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, '0');
 const day = String(sevenDaysAgo.getDate()).padStart(2, '0');
-console.log(year+''+ month+''+ day)
+console.log(year+''+ month+''+ day);
+
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error('Error connecting to MySQL:', err);
+    return;
+  }
+
+  const database = process.env.DB_NAME;
+
+  db.query(`CREATE DATABASE IF NOT EXISTS ${database}`, (err, result) => {
+    if (err) {
+      console.error('Error creating database:', err);
+      return;
+    }
+
+    console.log('Database checked/created successfully');
+
+    const dbWithDatabase = mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
+
+    dbWithDatabase.connect((err) => {
+      if (err) {
+        console.error('Error connecting to the database:', err);
+        return;
+      }
+      console.log('Connected to the database');
+    });
+  });
+
+  const userTable = process.env.USER_TABLE;
+
+  db.query(
+    `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?`, 
+    [database, userTable], 
+    (err, result) => {
+      if (err) {
+        console.error('Error finding table:', err);
+        return;
+      }
+  
+      if (result.length > 0) {
+        console.log('Table Found!');
+      } else {
+        console.log('Table does not exist.');
+      }
+    }
+  );
+});
+
 app.get("/news/:searchTerm", (req, res) => {
   const searchParam = req.params.searchTerm
+  const replacedSearchParam = searchParam.replace(/\s/g,'+');
   const options = {
     hostname: "newsapi.org",
-    path: `/v2/everything?q=${searchParam}&from=${year}-${month}-${day}&sortBy=publishedAt&language=en&apiKey=${process.env.NEWS_API_KEY}`,
+    path: `/v2/everything?q=${replacedSearchParam}&from=${year}-${month}-${day}&sortBy=publishedAt&language=en&apiKey=${process.env.NEWS_API_KEY}`,
     headers: {
       "User-Agent": "MyNewsApp/1.0",
     },
