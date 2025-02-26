@@ -32,7 +32,9 @@ db.connect((err) => {
     return;
   }
 
-  db.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`, (err, result) => {
+  const database = process.env.DB_NAME;
+
+  db.query(`CREATE DATABASE IF NOT EXISTS ${database}`, (err, result) => {
     if (err) {
       console.error('Error creating database:', err);
       return;
@@ -55,6 +57,25 @@ db.connect((err) => {
       console.log('Connected to the database');
     });
   });
+
+  const userTable = process.env.USER_TABLE;
+
+  db.query(
+    `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?`, 
+    [database, userTable], 
+    (err, result) => {
+      if (err) {
+        console.error('Error finding table:', err);
+        return;
+      }
+  
+      if (result.length > 0) {
+        console.log('Table Found!');
+      } else {
+        console.log('Table does not exist.');
+      }
+    }
+  );
 });
 
 app.get("/news/:searchTerm", (req, res) => {
