@@ -1,8 +1,8 @@
 import React from "react";
 
-const Home = () => {
+const Home = ({ user }) => {
   return (
-    <h1>Home Page</h1>
+    <h1>Welcome back {user.displayName}</h1>
   );
 };
 
