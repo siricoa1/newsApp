@@ -84,13 +84,14 @@ db.connect((err) => {
     }
   );
 });
-
+//If desired, can include date limit on how far back articles go in the "from" parameter.
+//${year}-${month}-${day}
 app.get("/news/:searchTerm", (req, res) => {
   const searchParam = req.params.searchTerm
   const replacedSearchParam = searchParam.replace(/\s/g,'+');
   const options = {
     hostname: "newsapi.org",
-    path: `/v2/everything?q=${replacedSearchParam}&from=${year}-${month}-${day}&sortBy=publishedAt&language=en&apiKey=${process.env.NEWS_API_KEY}`,
+    path: `/v2/everything?q=${replacedSearchParam}&sortBy=relevancy&language=en&apiKey=${process.env.NEWS_API_KEY}`,
     headers: {
       "User-Agent": "MyNewsApp/1.0",
     },

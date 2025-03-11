@@ -1,8 +1,12 @@
 import React from "react";
 
 const Home = ({ user }) => {
+  console.log(user);
   return (
-    <h1>Welcome back {user.displayName}</h1>
+    <div>
+      <h1>Welcome back {user.displayName}</h1>
+      <img src={user.photoURL} id='userProfileImg'></img>
+    </div>
   );
 };
 

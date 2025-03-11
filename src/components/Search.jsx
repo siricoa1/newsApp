@@ -14,7 +14,7 @@ const Search = () => {
       const data = await response.json();
       console.log("Fetched Data:", data);
 
-      setArticles(data.results || data.articles|| []); 
+      setArticles(data.results || data.articles || []); 
     } catch (error) {
       console.error("Error fetching titles:", error);
     }
@@ -31,7 +31,7 @@ const Search = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
       <button className="btn btn-primary" onClick={fetchArticles}>
-        {loading ? "Loading..." : "Get titles"}
+        {loading ? "Loading..." : "Get articles"}
       </button>
 
       {articles.length > 0 && (
@@ -43,7 +43,7 @@ const Search = () => {
               <img 
                 src={article.urlToImage} 
                 className="img-fluid img-thumbnail my-2" 
-                alt="Article" 
+                alt="Image Unavailable"
                 style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px' }} 
               />
               <a href={article.url} className="btn btn-primary mt-2">Read More</a>

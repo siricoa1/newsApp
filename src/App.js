@@ -32,7 +32,7 @@ const App = () => {
     return (
       <div className="login-container">
         <h2>Please Sign In</h2>
-        <button onClick={handleSignIn}>Sign In with Google</button>
+        <button id="loginBtn" className="btn btn-outline-light" onClick={handleSignIn}>Sign In with Google</button>
       </div>
     );
   }
