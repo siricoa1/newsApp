@@ -53,6 +53,10 @@ module.exports = {
     compress: true,
     port: 3000,
     historyApiFallback: true,
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+      'Cross-Origin-Embedder-Policy':'unsafe-none',
+    },
   },
   mode: "development",
 };

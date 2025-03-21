@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Search = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [favorite, setFavoriteArticle] = useState([]);
+
+  const setFavArticle = (data) => {
+    setFavoriteArticle(data);
+    console.log(data);
+    console.log(favorite);
+  }
 
   const fetchArticles = async () => {
     if (!searchTerm) return alert("Enter a search term");
@@ -47,6 +54,7 @@ const Search = () => {
                 style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px' }} 
               />
               <a href={article.url} className="btn btn-primary mt-2">Read More</a>
+              <button className="btn btn-primary mt-2" onClick={()=>setFavArticle([article.title, article.author, article.urlToImage, article.url])}>Save Article</button>
             </li>
           ))}
         </ul>

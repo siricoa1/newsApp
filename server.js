@@ -79,7 +79,13 @@ db.connect((err) => {
       if (result.length > 0) {
         console.log('Table Found!');
       } else {
-        console.log('Table does not exist.');
+        console.log('Creating Table!.');
+        db.query(`CREATE TABLE ${process.env.DB_NAME}.${process.env.USER_TABLE} (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(20), password VARCHAR(20), name VARCHAR(20))`, (err, result) => {
+          if (err){
+            console.error('error creating table:', err);
+          }
+          console.log('Table created successfully');
+        })
       }
     }
   );

@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 const Home = ({ user }) => {
-  console.log(user);
+  const [userProfileImage, setImage] = useState(null);
+  const [userDisplayName, setName] = useState(null);
+
+  useEffect(() => {
+    if(user.photoURL !== userProfileImage) {
+      setImage(user.photoURL);
+    } 
+    setName(user.displayName);
+  }, [user, userProfileImage]);
+
+  const memoizedProfileImage = useMemo(() => userProfileImage, [userProfileImage]);
   return (
     <div>
-      <h1>Welcome back {user.displayName}</h1>
-      <img src={user.photoURL} id='userProfileImg'></img>
+      <h1>Welcome back {userDisplayName}</h1>
+      <img src={memoizedProfileImage} id='userProfileImg'></img>
     </div>
   );
 };
