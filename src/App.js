@@ -23,12 +23,27 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
+  const handlePost = (data) => {
+    fetch('http://localhost:5000/api/user',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(response => response.json()).then(data =>{
+      console.log('success', data);
+    }).catch(error => {
+      console.error('Error:', error);
+    })
+  };
+
   const handleSignIn = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
         console.log("User signed in:", result.user);
         setUser(result.user);
+        handlePost(result.user);
       })
       .catch((error) => console.error("Popup sign-in error:", error));
   };
@@ -47,7 +62,7 @@ const App = () => {
         <Nav routes={routes} user={user}/>
         <Routes>
             <Route path="/" element={<Home user={user}/>} />
-            <Route path="/search" element={<Search />} />
+            <Route path="/search" element={<Search user={user}/>} />
         </Routes>
     </div>
   );

@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
 
-const Search = () => {
+const Search = ({ user }) => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [favorite, setFavoriteArticle] = useState([]);
 
-  const setFavArticle = (data) => {
-    setFavoriteArticle(data);
-    console.log(data);
-    console.log(favorite);
+  const setFavoriteArticle = (data) => {
+    fetch('http://localhost:5000/api/article',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(response => response.json()).then(data =>{
+      console.log('success', data);
+    }).catch(error => {
+      console.error('Error:', error);
+    })
   }
 
   const fetchArticles = async () => {
@@ -54,7 +61,7 @@ const Search = () => {
                 style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px' }} 
               />
               <a href={article.url} className="btn btn-primary mt-2">Read More</a>
-              <button className="btn btn-primary mt-2" onClick={()=>setFavArticle([article.title, article.author, article.urlToImage, article.url])}>Save Article</button>
+              <button className="btn btn-primary mt-2" onClick={()=>setFavoriteArticle([user.email, article.title, article.author, article.urlToImage, article.url])}>Save Article</button>
             </li>
           ))}
         </ul>
