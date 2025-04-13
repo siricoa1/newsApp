@@ -51,18 +51,20 @@ const Search = ({ user }) => {
       {articles.length > 0 && (
         <ul className="list-group mt-3">
           {articles.map((article, index) => (
-            <li key={index} className="list-group-item d-flex flex-column align-items-center text-center">
-              <h5>{article.title}</h5>
-              <p>{article.author}</p>
-              <img 
-                src={article.urlToImage} 
-                className="img-fluid img-thumbnail my-2" 
-                alt="Image Unavailable"
-                style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px' }} 
-              />
-              <a href={article.url} className="btn btn-primary mt-2">Read More</a>
-              <button className="btn btn-primary mt-2" onClick={()=>setFavoriteArticle([user.email, article.title, article.author, article.urlToImage, article.url])}>Save Article</button>
-            </li>
+            <div key={article.id} className="homeArticleDiv">
+              <li key={index} className="list-group-item d-flex flex-column align-items-center text-center">
+                <h5>{article.title}</h5>
+                <p>{article.author}</p>
+                <img 
+                  src={article.urlToImage} 
+                  className="img-fluid img-thumbnail my-2" 
+                  alt="Image Unavailable"
+                  style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px' }} 
+                />
+                <a href={article.url} className="btn btn-primary mt-2">Read More</a>
+                <button className="btn btn-primary mt-2" onClick={()=>setFavoriteArticle([user.email, article.title, article.author, article.urlToImage, article.url])}>Save Article</button>
+              </li>
+            </div>
           ))}
         </ul>
       )}

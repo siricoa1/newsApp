@@ -53,24 +53,27 @@ const Home = ({ user }) => {
   }
 
   return (
-    <div>
-      <h1>Welcome back {memoizedDisplayName}</h1>
-      <img src={memoizedProfileImage} id='userProfileImg'></img>
-      <h1>{loading ? "Loading..." : "Your Saved Articles"}</h1>
-      <ol>
-        {favoriteArticles.map((article) => (
-          <div key={article.id}>
-            <li className="list-group-item d-flex flex-column align-items-center text-center">
-              <h1>{article.title}</h1>
-              <h3>{article.author}</h3>
-              <img src={article.img} className="img-fluid img-thumbnail my-2" alt="Image Unavailable" style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px' }} ></img>
-              <a href={article.url} className="btn btn-primary mt-2">Read More</a>
-              <button className="btn btn-danger mt-2" onClick={()=>removeArticle([user.email, article.id])}>Remove Article</button>
-            </li>
-          </div>
-        ))}
-      </ol>
-
+    <div id='homeContainer'>
+      <div id='homeProfileDiv'>
+        <img src={memoizedProfileImage} id='userProfileImg'></img>
+        <h1 id='welcomeTitle'>{memoizedDisplayName}</h1>
+      </div>
+      <h1 id='homeSavedArticles'>{loading ? "Loading..." : ""}</h1>
+      <div  className="container text-center mt-5">
+        <ol  className="list-group mt-3">
+          {favoriteArticles.map((article) => (
+            <div key={article.id} className="homeArticleDiv">
+              <li className="list-group-item d-flex flex-column align-items-center text-center">
+                <h1>{article.title}</h1>
+                <h3>{article.author}</h3>
+                <img src={article.img} className="img-fluid img-thumbnail my-2" alt="Image Unavailable" style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px' }} ></img>
+                <a href={article.url} className="btn btn-primary mt-2">Read More</a>
+                <button className="btn btn-danger mt-2" onClick={()=>removeArticle([user.email, article.id])}>Remove Article</button>
+              </li>
+            </div>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 };
