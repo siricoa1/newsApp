@@ -36,15 +36,6 @@ html, body {
     background-color: white;
     padding-bottom: 10px;
 }
-#homeProfileDiv {
-    background-color: rgb(44, 44, 44);
-    color: white;
-    display: flex;
-    align-content: space-around;
-    padding-left: 12px;
-    padding-top: 50px;
-    padding-bottom: 50px;
-}
 #welcomeTitle {
     margin-top: auto;
     margin-bottom: auto;

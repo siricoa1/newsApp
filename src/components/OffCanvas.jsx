@@ -5,13 +5,20 @@ import { auth } from '../../firebase/firebaseConfig'
 
 function OffNav({ user }) {
   const [show, setShow] = useState(false);
+
   const memoizedProfileImage = useMemo(() => user.photoURL, [user.photoURL]);
   const memoizedDisplayName = useMemo(() => user.displayName, [user.displayName]);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
   const handleSignOut = () => {
     signOut(auth).catch((error) => console.error("Error signing out:", error));
   };
+
+  // const handleAccountDelete = () => {
+
+  // }
 
   return (
     <>

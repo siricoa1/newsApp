@@ -9,17 +9,16 @@ const Nav = ({ routes, user }) => {
     return (    
       <nav className="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
         <div className="container-fluid">
-          <a className="navbar-brand">News App</a>
-
+          <div>
+            <OffNav user={user}></OffNav>
+            <a className="navbar-brand" style={{marginLeft: '10px'}}>Logged in as: {memoizedDisplayName}</a>
+          </div>
           <div className="d-flex">
             {routes.map((route, index) => (
               <Link key={index} className="btn btn-outline-light me-2 navBtns" to={route.path}>
                 {route.name}
               </Link>
             ))}
-            {user && (
-              <OffNav user={user}></OffNav>
-            )}
           </div>
         </div>
       </nav>

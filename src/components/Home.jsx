@@ -54,10 +54,6 @@ const Home = ({ user }) => {
 
   return (
     <div id='homeContainer'>
-      <div id='homeProfileDiv'>
-        <img src={memoizedProfileImage} id='userProfileImg'></img>
-        <h1 id='welcomeTitle'>{memoizedDisplayName}</h1>
-      </div>
       <h1 id='homeSavedArticles'>{loading ? "Loading..." : ""}</h1>
       <div  className="container text-center mt-5">
         <ol  className="list-group mt-3">
