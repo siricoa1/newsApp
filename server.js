@@ -27,18 +27,27 @@ const month = String(today.getMonth() + 1).padStart(2, '0');
 const day = String(sevenDaysAgo.getDate()).padStart(2, '0');
 console.log(year+''+ month+''+ day);
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-});
+let db
+let dbWithDatabase
 
-const dbWithDatabase = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+if (process.env.JAWSDB_URL) {
+  db = mysql.createConnection(process.env.JAWSDB_URL);
+  dbWithDatabase = mysql.createConnection(process.env.JAWSDB_URL);
+} else {
+  db = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+  });
+
+  dbWithDatabase = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  });
+}
+
 
 db.connect((err) => {
   if (err) {
