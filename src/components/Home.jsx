@@ -11,7 +11,8 @@ const Home = ({ user }) => {
     setLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:5000/api/favorites?userID=${userEmail}`, {
+      // remember to change back to "http://localhost:5000" for dev
+      const response = await fetch(`https://newsapiapp-a86c0a79e477.herokuapp.com/api/favorites?userID=${userEmail}`, {
         method: 'GET',
       });
   
@@ -40,7 +41,7 @@ const Home = ({ user }) => {
   const removeArticle = (data) => {
      // remember to change back to "http://localhost:5000" for dev
     const emailData = data[0]
-    fetch(`https://newsapiapp-a86c0a79e477.herokuapp.com//api/remove?aid=${data[1]}&userEmail=${data[0]}`, {
+    fetch(`https://newsapiapp-a86c0a79e477.herokuapp.com/api/remove?aid=${data[1]}&userEmail=${data[0]}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
