@@ -139,7 +139,7 @@ db.connect((err) => {
         console.log('Table Found!');
       } else {
         console.log('Creating Table!.');
-        db.query(`CREATE TABLE ${process.env.DB_NAME}.${process.env.FAVORITES_TABLE} (uid INT NOT NULL, aid INT NOT NULL, PRIMARY KEY (uid, aid), FOREIGN KEY(uid) REFERENCES Users(id) ON DELETE CASCADE, FOREIGN KEY(aid) REFERENCES ARTICLES(id) ON DELETE CASCADE)`, (err, result) => {
+        db.query(`CREATE TABLE ${process.env.DB_NAME}.${process.env.FAVORITES_TABLE} (uid INT NOT NULL, aid INT NOT NULL, PRIMARY KEY (uid, aid), FOREIGN KEY(uid) REFERENCES ${process.env.USER_TABLE}(id) ON DELETE CASCADE, FOREIGN KEY(aid) REFERENCES ${process.env.ARTICLE_TABLE}(id) ON DELETE CASCADE)`, (err, result) => {
           if (err){
             console.error('error creating table:', err);
           }
