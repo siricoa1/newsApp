@@ -98,68 +98,50 @@ app.post("/api/user", (req, res) => {
 });
 
 app.post("/api/article", (req, res) => {
-  const [userEmail, title, author, imgURL, articleURL] = req.body;
+  const { userID, title, author, img, url } = req.body;
 
-  const articleTable = process.env.ARTICLE_TABLE;
-  const favoriteTable = process.env.FAVORITES_TABLE;
-  const userTable = process.env.USER_TABLE;
+  console.log("Received favorite article request:", req.body);
 
-  const articleSearch = `SELECT * FROM ${articleTable} WHERE title = ? AND author = ?`;
-  const favoriteSearch = `SELECT * FROM ${favoriteTable} WHERE aid = ? AND uid = ?`;
-  const userSearch = `SELECT id FROM ${userTable} WHERE email = ?`;
-  const insertFavoriteQuery = `INSERT INTO ${favoriteTable} (uid, aid) VALUES (?, ?)`;
-  const insertArticleQuery = `INSERT INTO ${articleTable} (title, author, img, url) VALUES (?, ?, ?, ?)`;
+  pool.query(
+    `INSERT IGNORE INTO ${process.env.USER_TABLE} (email) VALUES (?)`,
+    [userID],
+    (err) => {
+      if (err) {
+        console.error("Error inserting user:", err);
+        return res.status(500).json({ error: "DB error inserting user" });
+      }
 
-  db.query(articleSearch, [title, author], (err, articleResult) => {
-    if (err) return res.status(500).json({ error: "Internal Server Error" });
-
-    if (articleResult.length > 0) {
-      const articleID = articleResult[0].id;
-
-      db.query(userSearch, [userEmail], (err, userResult) => {
-        if (err) return res.status(500).json({ error: "Internal Server Error" });
-        if (userResult.length === 0) return;
-
-        const userID = userResult[0].id;
-
-        db.query(favoriteSearch, [articleID, userID], (err, favResult) => {
-          if (err) return res.status(500).json({ error: "Internal Server Error" });
-          if (favResult.length > 0) {
-            return res.json({ exists: true, message: "Article already exists" });
+      pool.query(
+        `INSERT IGNORE INTO ${process.env.ARTICLE_TABLE} (title, author, img, url) VALUES (?, ?, ?, ?)`,
+        [title, author, img, url],
+        (err) => {
+          if (err) {
+            console.error("Error inserting article:", err);
+            return res.status(500).json({ error: "DB error inserting article" });
           }
 
-          db.query(insertFavoriteQuery, [userID, articleID], (err, result) => {
-            if (err) return res.status(500).json({ error: "Error adding favorite" });
-            return res
-              .status(201)
-              .json({ message: "Article added successfully", result });
-          });
-        });
-      });
-      return;
+          pool.query(
+            `INSERT IGNORE INTO ${process.env.FAVORITES_TABLE} (uid, aid)
+             SELECT u.id, a.id
+             FROM ${process.env.USER_TABLE} u, ${process.env.ARTICLE_TABLE} a
+             WHERE u.email = ? AND a.title = ?`,
+            [userID, title],
+            (err) => {
+              if (err) {
+                console.error("Error inserting favorite:", err);
+                return res.status(500).json({ error: "DB error inserting favorite" });
+              }
+
+              console.log("Favorite saved for:", userID, title);
+              res.json({ message: "Favorite saved!" });
+            }
+          );
+        }
+      );
     }
-
-    db.query(insertArticleQuery, [title, author, imgURL, articleURL], (err, insertResult) => {
-      if (err) return res.status(500).json({ error: "Error creating article" });
-
-      const newArticleID = insertResult.insertId;
-
-      db.query(userSearch, [userEmail], (err, userResult) => {
-        if (err) return res.status(500).json({ error: "Internal Server Error" });
-        if (userResult.length === 0) return;
-
-        const userID = userResult[0].id;
-
-        db.query(insertFavoriteQuery, [userID, newArticleID], (err, result) => {
-          if (err) return res.status(500).json({ error: "Error adding favorite" });
-          return res
-            .status(201)
-            .json({ message: "Article added and created successfully", result });
-        });
-      });
-    });
-  });
+  );
 });
+
 
 app.get("/api/favorites", (req, res) => {
   const favoriteTable = process.env.FAVORITES_TABLE;
