@@ -24,7 +24,7 @@ const App = () => {
   }, []);
 
   const handlePost = (data) => {
-    fetch('http://localhost:5000/api/user',{
+    fetch('https://newsapiapp-a86c0a79e477.herokuapp.com/api/user',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
