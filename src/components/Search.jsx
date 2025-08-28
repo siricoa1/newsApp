@@ -7,7 +7,7 @@ const Search = ({ user }) => {
 
   const setFavoriteArticle = (data) => {
     // remember to change back to "http://localhost:5000" for dev
-    fetch('https://newsapiapp-a86c0a79e477.herokuapp.com/api/article',{
+    fetch('http://localhost:5000/api/article',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ const Search = ({ user }) => {
     setLoading(true);
     try {
       // remember to change back to "http://localhost:5000" for dev
-      const response = await fetch(`https://newsapiapp-a86c0a79e477.herokuapp.com/news/${encodeURIComponent(searchTerm)}`);
+      const response = await fetch(`http://localhost:5000/news/${encodeURIComponent(searchTerm)}`);
       const data = await response.json();
       console.log("Fetched Data:", data);
 
