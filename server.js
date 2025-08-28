@@ -98,39 +98,64 @@ app.post("/api/user", (req, res) => {
 });
 
 app.post("/api/article", (req, res) => {
-  const { userID, title, author, img, url } = req.body;
+  const { userID, title, author, img, url, displayName } = req.body;
+  const userTable = process.env.USER_TABLE;
+  const articleTable = process.env.ARTICLE_TABLE;
+  const favoritesTable = process.env.FAVORITES_TABLE;
 
   pool.query(
-    `INSERT IGNORE INTO ${process.env.USER_TABLE} (email) VALUES (?)`,
-    [userID],
+    `INSERT IGNORE INTO ${userTable} (email, name) VALUES (?, ?)`,
+    [userID, displayName || null],
     (err) => {
-      if (err) return res.status(500).json({ error: "Error inserting user" });
+      if (err) {
+        console.error("Error inserting user:", err);
+        return res.status(500).json({ error: "Error inserting user" });
+      }
 
       pool.query(
-        `SELECT id FROM ${process.env.USER_TABLE} WHERE email = ?`,
+        `SELECT id FROM ${userTable} WHERE email = ?`,
         [userID],
         (err, userRows) => {
-          if (err || userRows.length === 0) return res.status(500).json({ error: "User lookup failed" });
+          if (err) {
+            console.error("User lookup error:", err);
+            return res.status(500).json({ error: "User lookup error" });
+          }
+          if (userRows.length === 0) {
+            return res.status(404).json({ error: "User not found" });
+          }
+
           const uid = userRows[0].id;
 
           pool.query(
-            `INSERT IGNORE INTO ${process.env.ARTICLE_TABLE} (title, author, img, url) VALUES (?, ?, ?, ?)`,
+            `INSERT IGNORE INTO ${articleTable} (title, author, img, url) VALUES (?, ?, ?, ?)`,
             [title, author, img, url],
             (err) => {
-              if (err) return res.status(500).json({ error: "Error inserting article" });
+              if (err) {
+                console.error("Error inserting article:", err);
+                return res.status(500).json({ error: "Error inserting article" });
+              }
 
               pool.query(
-                `SELECT id FROM ${process.env.ARTICLE_TABLE} WHERE title = ? AND url = ?`,
+                `SELECT id FROM ${articleTable} WHERE title = ? AND url = ?`,
                 [title, url],
                 (err, articleRows) => {
-                  if (err || articleRows.length === 0) return res.status(500).json({ error: "Article lookup failed" });
+                  if (err) {
+                    console.error("Article lookup error:", err);
+                    return res.status(500).json({ error: "Article lookup error" });
+                  }
+                  if (articleRows.length === 0) {
+                    return res.status(404).json({ error: "Article not found" });
+                  }
                   const aid = articleRows[0].id;
 
                   pool.query(
-                    `INSERT IGNORE INTO ${process.env.FAVORITES_TABLE} (uid, aid) VALUES (?, ?)`,
+                    `INSERT IGNORE INTO ${favoritesTable} (uid, aid) VALUES (?, ?)`,
                     [uid, aid],
                     (err) => {
-                      if (err) return res.status(500).json({ error: "Error saving favorite" });
+                      if (err) {
+                        console.error("Error saving favorite:", err);
+                        return res.status(500).json({ error: "Error saving favorite" });
+                      }
                       res.json({ message: "Favorite saved!" });
                     }
                   );
@@ -143,6 +168,7 @@ app.post("/api/article", (req, res) => {
     }
   );
 });
+
 
 
 
