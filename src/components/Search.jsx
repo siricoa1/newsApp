@@ -6,6 +6,13 @@ const Search = ({ user }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const setFavoriteArticle = (data) => {
+    console.log("setFavoriteArticle payload:", {
+      email: user.email,
+      title: data.title,
+      author: data.author,
+      img: data.img,
+      url: data.url
+    },"Just data:", data);
     // remember to change back to "http://localhost:5000" for dev
     fetch('https://newsapiapp-a86c0a79e477.herokuapp.com/api/article',{
       method: 'POST',

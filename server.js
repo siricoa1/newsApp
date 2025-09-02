@@ -101,6 +101,7 @@ app.post("/api/user", (req, res) => {
 });
 
 app.post("/api/article", (req, res) => {
+  console.log("Incoming POST /api/article:", req.body);
   const { userID, title, author, img, url } = req.body;
   const userTable = process.env.USER_TABLE;
   const articleTable = process.env.ARTICLE_TABLE;
