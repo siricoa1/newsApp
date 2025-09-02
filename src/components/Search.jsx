@@ -5,27 +5,33 @@ const Search = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const setFavoriteArticle = (data) => {
-    console.log("setFavoriteArticle payload:", {
+  const setFavoriteArticle = (article) => {
+    const payload = {
       email: user.email,
-      title: data.title,
-      author: data.author,
-      img: data.img,
-      url: data.url
-    },"Just data:", data);
+      title: article.title,
+      author: article.author,
+      img: article.urlToImage,
+      url: article.url,
+    };
+
+    console.log("setFavoriteArticle payload:", payload);
+
     // remember to change back to "http://localhost:5000" for dev
-    fetch('https://newsapiapp-a86c0a79e477.herokuapp.com/api/article',{
+    fetch('https://newsapiapp-a86c0a79e477.herokuapp.com/api/article', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
-    }).then(response => response.json()).then(data =>{
-      console.log('success', data);
-    }).catch(error => {
-      console.error('Error:', error);
+      body: JSON.stringify(payload),
     })
-  }
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('success', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
 
   const fetchArticles = async () => {
     if (!searchTerm) return alert("Enter a search term");
@@ -71,7 +77,7 @@ const Search = ({ user }) => {
                   style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px' }} 
                 />
                 <a href={article.url} className="btn btn-primary mt-2">Read More</a>
-                <button className="btn btn-primary mt-2" onClick={()=>setFavoriteArticle([user.email, article.title, article.author, article.urlToImage, article.url])}>Save Article</button>
+                <button className="btn btn-primary mt-2" onClick={()=>setFavoriteArticle(article)}>Save Article</button>
               </li>
             </div>
           ))}
