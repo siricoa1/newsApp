@@ -44,6 +44,9 @@ if (process.env.JAWSDB_URL) {
 const db = pool;
 
 db.query(
+  `DROP TABLE IF EXISTS ${process.env.USER_TABLE}, ${process.env.ARTICLE_TABLE}, ${process.env.FAVORITES_TABLE}`
+);
+db.query(
   `CREATE TABLE IF NOT EXISTS ${process.env.USER_TABLE} (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(50) UNIQUE,
