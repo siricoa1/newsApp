@@ -7,7 +7,7 @@ const Search = ({ user }) => {
 
   const setFavoriteArticle = (article) => {
     const payload = {
-      email: user.email,
+      userID: user.email,
       title: article.title,
       author: article.author,
       img: article.urlToImage,
