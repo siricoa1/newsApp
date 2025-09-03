@@ -60,7 +60,8 @@ const Home = ({ user }) => {
           <h1>Welcome</h1>
           <br></br>
           <br></br>
-          <h3>Saved articles will appear here. To save articles go to the search page and look for an article you like, then hit the save button below. The article</h3>
+          <h3>Saved articles will appear here. To save articles go to the search page and look for an article you like, then hit the save button below the article</h3>
+          <br></br>
           <h3>To log out, click on your avatar at the top left of the screen, this will open a menu and allow you to log out.</h3>
         </div>
       </div>
